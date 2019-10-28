@@ -62,5 +62,14 @@
   },
   "dependencies": {
     "compressing": "^1.4.0"
-  }
+  },
+  "icon": "images/logo.png",
+  "bugs": {
+    "email": "shuqiyige@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shuqiyige/cmp-helper.git"
+  },
+  "homepage": "https://github.com/shuqiyige/cmp-helper/blob/master/README.md"
 }

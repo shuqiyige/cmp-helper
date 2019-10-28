@@ -19,3 +19,11 @@
 
 ### 右键点击`CMP 打包`或者`Wechat 打包`
 
+> 右键菜单
+
+![右键截图](https://raw.githubusercontent.com/shuqiyige/cmp-helper/master/doc/pic1.png "右键截图")
+
+> 打包成功提示
+
+![右键截图](https://raw.githubusercontent.com/shuqiyige/cmp-helper/master/doc/pic2.png "右键截图")
+
