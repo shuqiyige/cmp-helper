@@ -2,7 +2,7 @@
   "name": "cmp-helper",
   "displayName": "cmp-helper",
   "description": "cmp 打包同步文件助手",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "cmpHelper",
   "author": {
     "name": "shuqi"

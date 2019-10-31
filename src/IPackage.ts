@@ -56,8 +56,8 @@ class CmpPackage extends IPackage{
         // ${m3Tools}/libs/RunI18n.jar
         let i18nclasspathjar=`${this.mateInfo.m3Tools}${path.sep}libs${path.sep}RunI18n.jar`;
 
-        // ${seeyon}/m3files/v5/${bundleName}.zip
-        let v5OutPath = `${this.mateInfo.v5Runtime}${path.sep}m3files${path.sep}v5${path.sep}${this.mateInfo.appId}.zip`;
+        // ${seeyon}/m3files/[m3|v5]/${bundleName}.zip
+        let v5OutPath = `${this.mateInfo.v5Runtime}${path.sep}m3files${path.sep}${this.mateInfo.team}${path.sep}${this.mateInfo.appId}.zip`;
         
         // ${appCurrentPath}/out/vreport.zip
         let tempDir = `${this.mateInfo.v5Runtime}${path.sep}m3files${path.sep}v5temp`;
@@ -86,7 +86,7 @@ class CmpPackage extends IPackage{
             }).catch(error=>{
                 let msg  = `${v5OutPath} package fail!`;
                 window.showInformationMessage(msg);
-                Utils.updateStatusBar(`${this.mateInfo.appName} cmp package fail`,msg);
+                Utils.updateStatusBar(`${this.mateInfo.appName} cmp package fail`,error);
             });
         });
         return true;
@@ -102,10 +102,10 @@ class WechatPackage  extends IPackage{
         let classpathjar=`${this.mateInfo.m3Tools}${path.sep}libs${path.sep}fastjson-1.1.27.jar;${this.mateInfo.m3Tools}${path.sep}libs${path.sep}s3script.jar;${this.mateInfo.m3Tools}${path.sep}libs${path.sep}rhino_15.jar`;
         let i18nclasspathjar=`${this.mateInfo.m3Tools}${path.sep}libs${path.sep}RunI18n.jar`;
 
-        // ${seeyon}/m3/apps/v5/${bundleName}
-        let v5OutPath = `${this.mateInfo.v5Runtime}${path.sep}m3${path.sep}apps${path.sep}v5${path.sep}${this.mateInfo.bundleName}`;
+        // ${seeyon}/m3/apps/[v5|m3]/${bundleName}
+        let v5OutPath = `${this.mateInfo.v5Runtime}${path.sep}m3${path.sep}apps${path.sep}${this.mateInfo.team}${path.sep}${this.mateInfo.bundleName}`;
 
-        // ${appCurrentPath}/out/vreport.zip
+        // ${appCurrentPath}/m3/apps/vreport.zip
         let outZip = `${this.mateInfo.v5Runtime}${path.sep}m3${path.sep}apps${path.sep}${this.mateInfo.bundleName}.zip`;
         
         // ${m3Tools}/jdk/bin/java.exe
@@ -126,7 +126,7 @@ class WechatPackage  extends IPackage{
             }).catch(error=>{
                 let msg  = `${v5OutPath} package fail!`;
                 window.showInformationMessage(msg);
-                Utils.updateStatusBar(`${this.mateInfo.appName} wechat package fail`,msg);
+                Utils.updateStatusBar(`${this.mateInfo.appName} wechat package fail`,error);
             });
         return true;
     }
@@ -142,6 +142,7 @@ export class MateInfo{
     public v5Runtime: string|undefined;
     public m3Tools: string|undefined;
     public bundleName: string|undefined;
+    public team: string|undefined;
     public buildversion: boolean = true;
 }
 /**

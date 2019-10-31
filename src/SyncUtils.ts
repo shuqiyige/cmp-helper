@@ -24,7 +24,7 @@ class SyncUtils{
         const v5Runtime = vscode.workspace.getConfiguration("seeyon.cmp-helper").get("v5Runtime")
         //${seeyon}m3/apps/v5/${apppath}
         let relativePath = fileName.substr(appPath.length);
-        let targetPath = `${v5Runtime}${path.sep}m3${path.sep}apps${path.sep}v5${path.sep}${manifestJson.bundleName}${relativePath}`;
+        let targetPath = `${v5Runtime}${path.sep}m3${path.sep}apps${path.sep}${manifestJson.team}${path.sep}${manifestJson.bundleName}${relativePath}`;
         try {
             fs.writeFileSync(targetPath,fs.readFileSync(fileName));
             Utils.updateStatusBar("sync file success！",fileName + " --> " + targetPath);
