@@ -6,6 +6,7 @@
 "seeyon.cmp-helper":{
     "v5Runtime":"D:\\seeyon_v5_trunk_runtime\\ApacheJetspeed\\webapps\\seeyon",// v5运行目录
     "m3Tools":"D:\\my_apps_data\\m3_tool",//m3工具目录【包含打包需要的libs/xxx.jar和jdk】
+    "buildversion":false,//是否生成编译版本号【默认true】
     "packageApps":[{
         "appName":"考勤",
         "path":"D:\\project_spaces\\seeyon_v5_trunk\\apps-attendance-h5"

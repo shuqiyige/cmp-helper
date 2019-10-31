@@ -71,8 +71,8 @@ class CmpPackageUtils {
         mateinfo.appId = manifestJson.appId;
         mateinfo.appName = manifestJson.appName;
         mateinfo.bundleName = manifestJson.bundleName;
-
         mateinfo.v5Runtime = vscode.workspace.getConfiguration("seeyon.cmp-helper").get("v5Runtime",undefined);
+        mateinfo.buildversion = vscode.workspace.getConfiguration("seeyon.cmp-helper").get("buildversion",true);
         if(ClassUtils.isUndefinedOrNull(mateinfo.v5Runtime)){
             let msg = `seeyon.cmp-helper.v5Runtime is empty!`;
             CmpPackageUtils.updateStatusBar(msg,msg);

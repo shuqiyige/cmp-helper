@@ -64,7 +64,7 @@ class CmpPackage extends IPackage{
         // ${m3Tools}/jdk/bin/java.exe
         let javaExe = `${this.mateInfo.m3Tools}${path.sep}jdk${path.sep}bin${path.sep}java.exe`;
         
-        let cmpCmd = `${javaExe} -Dfile.encoding=UTF-8  -classpath ${classpathjar} org.s3.script.web.S3ScriptPublishCmd -sourcepath ${this.mateInfo.appCurrentPath}  -outfile ${outZip}   -commondata ${this.mateInfo.appCurrentPath}${path.sep}s3scriptjspdata${path.sep}cmp_commondata.data  -testdatapath null  -noexportpaths 'appRes;WEB-INF;s3scriptjspdata;s3uuid.data'  -buildversion true`;
+        let cmpCmd = `${javaExe} -Dfile.encoding=UTF-8  -classpath ${classpathjar} org.s3.script.web.S3ScriptPublishCmd -sourcepath ${this.mateInfo.appCurrentPath}  -outfile ${outZip}   -commondata ${this.mateInfo.appCurrentPath}${path.sep}s3scriptjspdata${path.sep}cmp_commondata.data  -testdatapath null  -noexportpaths 'appRes;WEB-INF;s3scriptjspdata;s3uuid.data'  -buildversion ${this.mateInfo.buildversion}`;
         child_process.execSync(cmpCmd);
 
         //解压文件
@@ -101,7 +101,7 @@ class WechatPackage  extends IPackage{
         // ${m3Tools}/jdk/bin/java.exe
         let javaExe = `${this.mateInfo.m3Tools}${path.sep}jdk${path.sep}bin${path.sep}java.exe`;
         
-        let wechatCmd = `${javaExe} -Dfile.encoding=UTF-8  -classpath ${classpathjar} org.s3.script.web.S3ScriptPublishCmd -sourcepath ${this.mateInfo.appCurrentPath}  -outfile ${outZip}   -commondata ${this.mateInfo.appCurrentPath}${path.sep}s3scriptjspdata${path.sep}wechat_commondata.data  -testdatapath null  -noexportpaths 'appRes;WEB-INF;s3scriptjspdata;s3uuid.data'  -buildversion true`;
+        let wechatCmd = `${javaExe} -Dfile.encoding=UTF-8  -classpath ${classpathjar} org.s3.script.web.S3ScriptPublishCmd -sourcepath ${this.mateInfo.appCurrentPath}  -outfile ${outZip}   -commondata ${this.mateInfo.appCurrentPath}${path.sep}s3scriptjspdata${path.sep}wechat_commondata.data  -testdatapath null  -noexportpaths 'appRes;WEB-INF;s3scriptjspdata;s3uuid.data'  -buildversion ${this.mateInfo.buildversion}`;
         let rs = child_process.execSync(wechatCmd);
 
         compressing.zip.uncompress(outZip,v5OutPath)
@@ -123,7 +123,8 @@ export class MateInfo{
     public appCurrentPath: string|undefined;
     public v5Runtime: string|undefined;
     public m3Tools: string|undefined;
-    bundleName: string|undefined;
+    public bundleName: string|undefined;
+    public buildversion: boolean = true;
 }
 /**
  * 导包类型枚举
