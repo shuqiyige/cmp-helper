@@ -2,6 +2,8 @@ import * as fs from "fs";
 import * as path from "path";
 import * as compressing from "compressing";
 import * as child_process from "child_process";
+import {window } from "vscode";
+import Utils from "./Utils";
 
 export default abstract class IPackage{
     // 需要打包的app目录
@@ -50,6 +52,7 @@ class CmpPackage extends IPackage{
         
         // ${m3Tools}/libs/fastjson.jar;${m3Tools}/libs/s3script.jar;${m3Tools}/libs/rhino_15.jar
         let classpathjar=`${this.mateInfo.m3Tools}${path.sep}libs${path.sep}fastjson-1.1.27.jar;${this.mateInfo.m3Tools}${path.sep}libs${path.sep}s3script.jar;${this.mateInfo.m3Tools}${path.sep}libs${path.sep}rhino_15.jar`;
+        
         // ${m3Tools}/libs/RunI18n.jar
         let i18nclasspathjar=`${this.mateInfo.m3Tools}${path.sep}libs${path.sep}RunI18n.jar`;
 
@@ -72,12 +75,18 @@ class CmpPackage extends IPackage{
             // 国际化
             let propertistojs = `${javaExe} -Dfile.encoding=UTF-8 -classpath ${i18nclasspathjar} com.seeyon.m3script.plugin.i18n.RunI18n ${outUnzip} "/i18n/" "1"`;
             child_process.execSync(propertistojs);
-
             // 再次压缩
             compressing.zip.compressDir(outUnzip,v5OutPath,{
                 ignoreBase:true// 忽略当前目录
             }).then(()=>{
                 IPackage.deleteFolder(tempDir);//删除临时目录
+                let msg  = `${v5OutPath} package success!`;
+                window.showInformationMessage(msg);
+                Utils.updateStatusBar(`${this.mateInfo.appName} cmp package success`,msg);
+            }).catch(error=>{
+                let msg  = `${v5OutPath} package fail!`;
+                window.showInformationMessage(msg);
+                Utils.updateStatusBar(`${this.mateInfo.appName} cmp package fail`,msg);
             });
         });
         return true;
@@ -95,6 +104,7 @@ class WechatPackage  extends IPackage{
 
         // ${seeyon}/m3/apps/v5/${bundleName}
         let v5OutPath = `${this.mateInfo.v5Runtime}${path.sep}m3${path.sep}apps${path.sep}v5${path.sep}${this.mateInfo.bundleName}`;
+
         // ${appCurrentPath}/out/vreport.zip
         let outZip = `${this.mateInfo.v5Runtime}${path.sep}m3${path.sep}apps${path.sep}${this.mateInfo.bundleName}.zip`;
         
@@ -105,11 +115,19 @@ class WechatPackage  extends IPackage{
         let rs = child_process.execSync(wechatCmd);
 
         compressing.zip.uncompress(outZip,v5OutPath)
-        .then(() =>{
-            let propertistojs = `${javaExe} -Dfile.encoding=UTF-8 -classpath ${i18nclasspathjar} com.seeyon.m3script.plugin.i18n.RunI18n ${v5OutPath} "/i18n/" "1"`;
-            child_process.execSync(propertistojs);
-            fs.unlinkSync(outZip);
-        });
+            .then(() =>{
+                let propertistojs = `${javaExe} -Dfile.encoding=UTF-8 -classpath ${i18nclasspathjar} com.seeyon.m3script.plugin.i18n.RunI18n ${v5OutPath} "/i18n/" "1"`;
+                child_process.execSync(propertistojs);
+                fs.unlinkSync(outZip);
+
+                let msg  = `${v5OutPath} package success!`;
+                window.showInformationMessage(msg);
+                Utils.updateStatusBar(`${this.mateInfo.appName} wechat package success`,msg);
+            }).catch(error=>{
+                let msg  = `${v5OutPath} package fail!`;
+                window.showInformationMessage(msg);
+                Utils.updateStatusBar(`${this.mateInfo.appName} wechat package fail`,msg);
+            });
         return true;
     }
     

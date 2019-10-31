@@ -14,7 +14,7 @@
         "appName":"任务",
         "path":"D:\\project_spaces\\seeyon_v5_trunk\\apps-taskmanage-h5",
     }],
-    "autoSyncStatic":true//自动同步静态文件[功能开发中]
+    "autoSyncStatic":true//自动同步静态文件(微协同),支持文件类型["js","css","json","svg","ttf","eot","woff","png","jpg","bmp","jpeg"]
 },
 ```
 
@@ -27,4 +27,16 @@
 > 打包成功提示
 
 ![右键截图](https://raw.githubusercontent.com/shuqiyige/cmp-helper/master/doc/pic2.png "右键截图")
+
+### m3Tools包含文件一览
+
+```
+m3_tool
+├── jdk     //jdk
+└── libs    //依赖的jar包
+    ├── fastjson-1.1.27.jar
+    ├── rhino_15.jar
+    ├── RunI18n.jar
+    └── s3script.jar
+```
 

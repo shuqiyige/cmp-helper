@@ -1,8 +1,8 @@
 {
   "name": "cmp-helper",
   "displayName": "cmp-helper",
-  "description": "",
-  "version": "0.0.2",
+  "description": "cmp 打包同步文件助手",
+  "version": "0.1.0",
   "publisher": "cmpHelper",
   "author": {
     "name": "shuqi"
@@ -14,9 +14,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:extension.cmpPackage",
-    "onCommand:extension.wechatPackage"
-  ],
+		"*"
+	],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
@@ -47,7 +46,7 @@
 			"properties": {
 				"seeyon.cmp-helper": {
 					"type": "object",
-					"default": {},
+					"default": { },
 					"description": "配置m3 tools目录、v5运行环境目录、代码目录"
 				}
 			}
