@@ -2,7 +2,7 @@
   "name": "cmp-helper",
   "displayName": "cmp-helper",
   "description": "cmp 打包同步文件助手",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "publisher": "cmpHelper",
   "author": {
     "name": "shuqi"
@@ -14,8 +14,8 @@
     "Other"
   ],
   "activationEvents": [
-		"*"
-	],
+    "*"
+  ],
   "main": "./out/extension.js",
   "contributes": {
     "commands": [
@@ -41,23 +41,23 @@
       ]
     },
     "configuration": {
-			"type": "object",
-			"title": "cmp helper Configuration",
-			"properties": {
-				"seeyon.cmp-helper": {
-					"type": "object",
-					"default": { },
-					"description": "配置m3 tools目录、v5运行环境目录、代码目录"
-				}
-			}
-		}
+      "type": "object",
+      "title": "cmp helper Configuration",
+      "properties": {
+        "seeyon.cmp-helper": {
+          "type": "object",
+          "default": {},
+          "description": "配置m3 tools目录、v5运行环境目录、代码目录"
+        }
+      }
+    }
   },
   "keywords": [
-		"cmp",
-		"cmphelper",
-		"seeyon",
-		"v5"
-	],
+    "cmp",
+    "cmphelper",
+    "seeyon",
+    "v5"
+  ],
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
@@ -77,7 +77,8 @@
     "vscode-test": "^1.2.0"
   },
   "dependencies": {
-    "compressing": "^1.4.0"
+    "compressing": "^1.4.0",
+    "request": "^2.88.0"
   },
   "icon": "images/logo.png",
   "bugs": {

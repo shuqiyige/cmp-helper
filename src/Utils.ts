@@ -3,6 +3,7 @@ import * as fs from "fs"
 import { StatusBarItem,workspace, WorkspaceConfiguration } from "vscode";
 import ClassUtils from "./ClassUtils";
 
+var timeer = null;
 class Utils{
     /**
      * 读取 manifest.json
@@ -73,6 +74,16 @@ class Utils{
         Utils.statusBar.text = 'CmpHelper: ' + text;
         Utils.statusBar.tooltip = 'CmpHelper: ' + tooltip;
         console.log(tooltip);
+        try{
+            if(timeer !== null){
+                clearTimeout(timeer);
+            }
+            timeer = setTimeout(() => {
+                timeer = null;
+                Utils.statusBar.text = 'CmpHelper: Ready';
+                Utils.statusBar.tooltip = 'CmpHelper: cmp helper is Ready'
+            }, 2000);
+        }catch(e){}
     }
 
     /**

@@ -30,6 +30,12 @@ class CmpPackageUtils {
         mateinfo.team = manifestJson.team;
         mateinfo.v5Runtime = vscode.workspace.getConfiguration("seeyon.cmp-helper").get("v5Runtime",undefined);
         mateinfo.buildversion = vscode.workspace.getConfiguration("seeyon.cmp-helper").get("buildversion",true);
+
+        // 热部署
+        mateinfo.address = vscode.workspace.getConfiguration("seeyon.cmp-helper").get("address","http://127.0.0.1");
+        mateinfo.passwd = vscode.workspace.getConfiguration("seeyon.cmp-helper").get("passwd","123456");
+        mateinfo.autoPublish = vscode.workspace.getConfiguration("seeyon.cmp-helper").get("autoPublish",true);
+
         if(ClassUtils.isUndefinedOrNull(mateinfo.v5Runtime)){
             let msg = `seeyon.cmp-helper.v5Runtime is empty!`;
             Utils.updateStatusBar(msg,msg);

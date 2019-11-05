@@ -4,6 +4,7 @@ import * as compressing from "compressing";
 import * as child_process from "child_process";
 import {window } from "vscode";
 import Utils from "./Utils";
+import PublishCmp from "./PublishCmp";
 
 export default abstract class IPackage{
     // 需要打包的app目录
@@ -49,7 +50,6 @@ export default abstract class IPackage{
 
 class CmpPackage extends IPackage{
     public doPackage(): boolean {
-        
         // ${m3Tools}/libs/fastjson.jar;${m3Tools}/libs/s3script.jar;${m3Tools}/libs/rhino_15.jar
         let classpathjar=`${this.mateInfo.m3Tools}${path.sep}libs${path.sep}fastjson-1.1.27.jar;${this.mateInfo.m3Tools}${path.sep}libs${path.sep}s3script.jar;${this.mateInfo.m3Tools}${path.sep}libs${path.sep}rhino_15.jar`;
         
@@ -81,8 +81,12 @@ class CmpPackage extends IPackage{
             }).then(()=>{
                 IPackage.deleteFolder(tempDir);//删除临时目录
                 let msg  = `${v5OutPath} package success!`;
-                window.showInformationMessage(msg);
                 Utils.updateStatusBar(`${this.mateInfo.appName} cmp package success`,msg);
+                if(!this.mateInfo.autoPublish){
+                    window.showInformationMessage(msg);
+                }else{
+                    PublishCmp.doPublish(this.mateInfo.address,this.mateInfo.passwd);
+                }
             }).catch(error=>{
                 let msg  = `${v5OutPath} package fail!`;
                 window.showInformationMessage(msg);
@@ -119,7 +123,6 @@ class WechatPackage  extends IPackage{
                 let propertistojs = `${javaExe} -Dfile.encoding=UTF-8 -classpath ${i18nclasspathjar} com.seeyon.m3script.plugin.i18n.RunI18n ${v5OutPath} "/i18n/" "1"`;
                 child_process.execSync(propertistojs);
                 fs.unlinkSync(outZip);
-
                 let msg  = `${v5OutPath} package success!`;
                 window.showInformationMessage(msg);
                 Utils.updateStatusBar(`${this.mateInfo.appName} wechat package success`,msg);
@@ -144,6 +147,11 @@ export class MateInfo{
     public bundleName: string|undefined;
     public team: string|undefined;
     public buildversion: boolean = true;
+
+    public passwd:string|undefined  = "123456";
+    public address:string|undefined = "127.0.0.1";
+    public autoPublish:boolean = true;
+
 }
 /**
  * 导包类型枚举

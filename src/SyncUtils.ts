@@ -12,6 +12,7 @@ class SyncUtils{
      * @param fileName 同步文件
      */
 	static doSync(fileName: string) {
+        Utils.updateStatusBar(`start sync file[${fileName}]`);
         if(!Utils.isConfig() || !Utils.isSupportSyncFile(fileName)){
             return;
         }

@@ -7,6 +7,9 @@
     "v5Runtime":"D:\\seeyon_v5_trunk_runtime\\ApacheJetspeed\\webapps\\seeyon",// v5运行目录
     "m3Tools":"D:\\my_apps_data\\m3_tool",//m3工具目录【包含打包需要的libs/xxx.jar和jdk】
     "buildversion":false,//是否生成编译版本号【默认true】
+    "address":"http://127.0.0.1",//v5的ip地址，默认【http://127.0.0.1】
+    "passwd":"123456",//system账号密码，默认【123456】
+    "autoPublish": true,//是否自动发布cmp zip包，默认【true】
     "packageApps":[{
         "appName":"考勤",
         "path":"D:\\project_spaces\\seeyon_v5_trunk\\apps-attendance-h5"
@@ -18,15 +21,24 @@
 },
 ```
 
-### 右键点击`CMP 打包`或者`Wechat 打包`
+### 打包预览
 
-> 右键菜单
+> 配置
 
-![右键截图](https://raw.githubusercontent.com/shuqiyige/cmp-helper/master/doc/pic1.png "右键截图")
+![配置](https://raw.githubusercontent.com/shuqiyige/cmp-helper/master/doc/config.gif "配置截图")
 
-> 打包成功提示
+> 微协同打包
 
-![右键截图](https://raw.githubusercontent.com/shuqiyige/cmp-helper/master/doc/pic2.png "右键截图")
+![微协同打包](https://raw.githubusercontent.com/shuqiyige/cmp-helper/master/doc/wechatpack.gif "右键截图")
+
+> CMP打包
+
+![CMP打包](https://raw.githubusercontent.com/shuqiyige/cmp-helper/master/doc/cmppack.gif "右键截图")
+
+> 文件自动同步
+
+![文件自动同步](https://raw.githubusercontent.com/shuqiyige/cmp-helper/master/doc/autoSync.gif "文件自动同步")
+
 
 ### m3Tools包含文件一览
 
@@ -40,3 +52,12 @@ m3_tool
     └── s3script.jar
 ```
 
+
+> 依赖插件
+
+```json
+{
+    "compressing": "^1.4.0", // https://github.com/node-modules/compressing
+    "request": "^2.88.0" // https://github.com/request/request
+}
+```
