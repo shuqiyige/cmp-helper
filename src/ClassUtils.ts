@@ -1,6 +1,4 @@
-import { isUndefined } from "util";
-
-var prototype = Object.prototype.toString
+let prototype = Object.prototype.toString;
 /**
  * JS 类型判断工具
  */

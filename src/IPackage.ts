@@ -4,7 +4,6 @@ import * as compressing from "compressing";
 import * as child_process from "child_process";
 import {window } from "vscode";
 import Utils from "./Utils";
-import PublishCmp from "./PublishCmp";
 
 export default abstract class IPackage{
     // 需要打包的app目录
@@ -20,6 +19,7 @@ export default abstract class IPackage{
     /**
      * 根据打包类型，生成对应实现
      * @param packageType 打包类型
+     * @param mateInfo
      */
     static getIPackage(packageType: PackageType,mateInfo: MateInfo):IPackage{
         if(packageType === PackageType.Wechat){
@@ -29,14 +29,14 @@ export default abstract class IPackage{
     }
     /**
      * 删除目录
-     * @param path 
+     * @param folder
      */
     static deleteFolder(folder: string) {
-        var files = [];
+        let files = [];
         if (fs.existsSync(folder)) {
             files = fs.readdirSync(folder);
             files.forEach(function (file, index) {
-                var curPath = `${folder}${path.sep}${file}`;
+                const curPath = `${folder}${path.sep}${file}`;
                 if (fs.statSync(curPath).isDirectory()) { // recurse
                     IPackage.deleteFolder(curPath);
                 } else { // delete file
@@ -85,7 +85,7 @@ class CmpPackage extends IPackage{
                 if(!this.mateInfo.autoPublish){
                     window.showInformationMessage(msg);
                 }else{
-                    PublishCmp.doPublish(this.mateInfo.address,this.mateInfo.passwd);
+                    Utils.doPublish(this.mateInfo.address,this.mateInfo.passwd);
                 }
             }).catch(error=>{
                 let msg  = `${v5OutPath} package fail!`;
@@ -151,7 +151,6 @@ export class MateInfo{
     public passwd:string|undefined  = "123456";
     public address:string|undefined = "127.0.0.1";
     public autoPublish:boolean = true;
-
 }
 /**
  * 导包类型枚举

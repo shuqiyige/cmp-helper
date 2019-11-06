@@ -16,7 +16,7 @@
   "activationEvents": [
     "*"
   ],
-  "main": "./out/extension.js",
+  "main": "./out/CmpHelper.js",
   "contributes": {
     "commands": [
       {

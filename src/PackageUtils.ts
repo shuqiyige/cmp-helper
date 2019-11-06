@@ -64,9 +64,9 @@ class CmpPackageUtils {
             Utils.updateStatusBar("unknown package path",`${packageName} package cancel for unknown package path!`);
             return;
         }
-        console.log(`${packageName} package start!`);
+        Utils.log(`${packageName} package start!`);
         CmpPackageUtils.doPackage_(appPath, type);
-        console.log(`${packageName} package end!`);
+        Utils.log(`${packageName} package end!`);
     }
     /**
      * 获取当前的工作目录
@@ -78,7 +78,7 @@ class CmpPackageUtils {
             try {
                 appPath = vscode.window.activeTextEditor.document.fileName;
             } catch (error) {
-                console.log(error);
+                Utils.log(error);
             }
         } else {
             appPath = maybePath.fsPath;
