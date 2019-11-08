@@ -33,7 +33,7 @@ class CmpPackageUtils {
 
         // 热部署
         mateinfo.address = vscode.workspace.getConfiguration("seeyon.cmp-helper").get("address","http://127.0.0.1");
-        mateinfo.passwd = vscode.workspace.getConfiguration("seeyon.cmp-helper").get("passwd","123456");
+        mateinfo.passwd = vscode.workspace.getConfiguration("seeyon.cmp-helper").get("passwd","system");
         mateinfo.autoPublish = vscode.workspace.getConfiguration("seeyon.cmp-helper").get("autoPublish",true);
 
         if(ClassUtils.isUndefinedOrNull(mateinfo.v5Runtime)){

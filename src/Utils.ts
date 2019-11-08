@@ -41,7 +41,7 @@ class Utils {
         return JSON.parse(fs.readFileSync(manifest, {
             "encoding": "utf8",
             "flag": "r"//读模式
-        }));
+        }).replace(/\n/g, ''));
     }
 
     /**
@@ -93,7 +93,7 @@ class Utils {
                 timeer = null;
                 Utils.statusBar.text = 'CmpHelper: Ready';
                 Utils.statusBar.tooltip = 'CmpHelper: cmp helper is Ready';
-            }, 2000);
+            }, 20000);
         } catch (e) {
         }
     }
@@ -254,14 +254,20 @@ class Utils {
         request.post({
             url:`${parms.address}/seeyon/main.do?method=login`,
             headers : {
-                ...Utils.defaultHeaders
+                ...Utils.defaultHeaders,
+                "Host": `${parms.address.replace("http://","").replace("https://","")}`,
+                "Origin": `${parms.address}`,
+                "Referer": `${parms.address}/seeyon/main.do`
             },
             form: {
                 "login.timezone": "GMT+8:00",
+                "authorization": "",
                 "fontSize": 12,
                 "screenWidth": 1920,
                 "screenHeight": 1080,
                 "login_username": parms.userName,
+                "login_validatePwdStrength": 1,
+                "loginName": parms.userName,
                 "login_password": parms.passwd
             }
         }, function(err,httpResponse,body){

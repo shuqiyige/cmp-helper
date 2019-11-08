@@ -43,7 +43,11 @@ export default abstract class IPackage{
                     fs.unlinkSync(curPath);
                 }
             });
-            fs.rmdirSync(folder);
+            try{
+                fs.rmdirSync(folder);
+            } catch (error) {
+                Utils.log("删除临时文件出错",error);
+            }
         }
     }
 }
@@ -79,7 +83,11 @@ class CmpPackage extends IPackage{
             compressing.zip.compressDir(outUnzip,v5OutPath,{
                 ignoreBase:true// 忽略当前目录
             }).then(()=>{
-                IPackage.deleteFolder(tempDir);//删除临时目录
+                try {
+                    IPackage.deleteFolder(tempDir);//删除临时目录
+                } catch (error) {
+                    Utils.log("删除临时文件出错",error);
+                }
                 let msg  = `${v5OutPath} package success!`;
                 Utils.updateStatusBar(`${this.mateInfo.appName} cmp package success`,msg);
                 if(!this.mateInfo.autoPublish){
@@ -122,7 +130,11 @@ class WechatPackage  extends IPackage{
             .then(() =>{
                 let propertistojs = `${javaExe} -Dfile.encoding=UTF-8 -classpath ${i18nclasspathjar} com.seeyon.m3script.plugin.i18n.RunI18n ${v5OutPath} "/i18n/" "1"`;
                 child_process.execSync(propertistojs);
-                fs.unlinkSync(outZip);
+                try {
+                    fs.unlinkSync(outZip);
+                } catch (error) {
+                    Utils.log("删除临时文件出错",error);
+                }
                 let msg  = `${v5OutPath} package success!`;
                 window.showInformationMessage(msg);
                 Utils.updateStatusBar(`${this.mateInfo.appName} wechat package success`,msg);
