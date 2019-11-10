@@ -18,7 +18,7 @@
         "appName":"任务",
         "path":"D:\\project_spaces\\seeyon_v5_trunk\\apps-taskmanage-h5",
     }],
-    "autoSyncStatic":true//自动同步静态文件(微协同),支持文件类型["js","css","json","svg","ttf","eot","woff","png","jpg","bmp","jpeg"]
+    "autoSyncStatic":true//自动同步静态文件(微协同),支持文件类型["js","css","json","svg","ttf","eot","woff","png","jpg","bmp","jpeg","properties"]
 },
 ```
 
