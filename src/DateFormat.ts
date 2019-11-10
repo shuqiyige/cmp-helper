@@ -46,7 +46,7 @@ class DateFormat{
         let sdatetime:string[] = source.split(" ");
         let sdate:string[] = sdatetime[0].split("-");
         let stime:string[] = sdatetime[1].split(":");
-        return new Date(parseInt(sdate[0], parseInt(sdate[1]) - 1, parseInt(sdate[2]), parseInt(stime[0]), parseInt(stime[1]), parseInt(stime[2]) );
+        return new Date(parseInt(sdate[0]), parseInt(sdate[1]) - 1, parseInt(sdate[2]), parseInt(stime[0]), parseInt(stime[1]), parseInt(stime[2]));
     };
 }
 export default DateFormat;
