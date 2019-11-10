@@ -1,7 +1,7 @@
 import * as path from "path";
 import * as fs from "fs";
 import * as request from "request";
-import {OutputChannel, StatusBarAlignment, StatusBarItem, window, workspace, WorkspaceConfiguration} from "vscode";
+import { OutputChannel, StatusBarAlignment, StatusBarItem, window, workspace, WorkspaceConfiguration } from "vscode";
 import ClassUtils from "./ClassUtils";
 
 let timeer = null;
@@ -34,14 +34,7 @@ class Utils {
         if (ClassUtils.isUndefinedOrNull(appPath)) {
             return;
         }
-        const manifest = path.join(appPath, "manifest.json");
-        if (!fs.existsSync(manifest)) {
-            return;
-        }
-        return JSON.parse(fs.readFileSync(manifest, {
-            "encoding": "utf8",
-            "flag": "r"//读模式
-        }).replace(/\n/g, ''));
+        return Utils.readJson(path.join(appPath, "manifest.json"));
     }
 
     /**
@@ -101,7 +94,7 @@ class Utils {
     /**
      * 支持同步的文件的后缀
      */
-    static allowSyncTypes: string[] = ["js", "css", "json", "svg", "ttf", "eot", "woff", "png", "jpg", "bmp", "jpeg", "map","properties"];
+    static allowSyncTypes: string[] = ["js", "css", "json", "svg", "ttf", "eot", "woff", "png", "jpg", "bmp", "jpeg", "map", "properties"];
 
     /**
      * @param fileName 判断文件是否支持同步
@@ -161,12 +154,12 @@ class Utils {
         "Accept-Language": "en,zh-CN;q=0.9,zh;q=0.8",
         "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
     };
-    static doPublish(ip:string,passwd:string){
-        function success(jsessionId){
+    static doPublish(ip: string, passwd: string) {
+        function success(jsessionId) {
             Utils.reloadV5Apps({
                 "address": ip,
-                "jsessionId" : jsessionId,
-            },function(msg){
+                "jsessionId": jsessionId,
+            }, function (msg) {
                 Utils.updateStatusBar("Hot load success,please reload M3", `热部署App完成,请重启M3`);
                 window.showInformationMessage(`Hot load success，please reload M3`);
             });
@@ -174,9 +167,9 @@ class Utils {
         //test
         Utils.loginV5({
             "address": ip,
-            "userName" : "system",
-            "passwd" : passwd
-        },success);
+            "userName": "system",
+            "passwd": passwd
+        }, success);
 
     }
 
@@ -185,43 +178,43 @@ class Utils {
      * @param parms { address:v5ip , jsessionId:sessionId }
      * @param success
      */
-    private static reloadV5Apps(parms,success){
+    private static reloadV5Apps(parms, success) {
         Utils.updateStatusBar("Hot load [start publish M3 App]", "热部署【开始重新发布App】");
 
         // 热更新 ： http://127.0.0.1/seeyon/ajax.do?method=ajaxAction&managerName=m3AppNewManager&rnd=32080
         // managerMethod: reloadV5Apps arguments: [{"reset":0}]
         // {"resultCode":60000,"message":"成功热部署：0个应用包；更新的应用包名称： "}
         request.post({
-            url:`${parms.address}/seeyon/ajax.do?method=ajaxAction&managerName=m3AppNewManager&rnd=${new Date().getTime()}`,
+            url: `${parms.address}/seeyon/ajax.do?method=ajaxAction&managerName=m3AppNewManager&rnd=${new Date().getTime()}`,
             headers: {
                 ...Utils.defaultHeaders,
                 'RequestType': 'AJAX',
                 'Referer': `${parms.address}/seeyon/cip/appManagerController.do?method=hotDeployment&_resourceCode=m3_hotDeployment`,
-                "Content-Type":"application/x-www-form-urlencoded;charset=UTF-8",
+                "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
                 "Cookie": `JSESSIONID=${parms.jsessionId}; loginPageURL=; login_locale=zh_CN`
             },
             form: {
                 "managerMethod": "reloadV5Apps",
-                "arguments": JSON.stringify([{"reset":0}])//JSON字符串
+                "arguments": JSON.stringify([{ "reset": 0 }])//JSON字符串
             }
-        }, function(err,httpResponse,body){
+        }, function (err, httpResponse, body) {
             if (err !== null) {
                 Utils.log(err);
                 Utils.updateStatusBar("Hot load [Fail]", err);
                 return;
             }
-            if(httpResponse.statusCode !== 200){
+            if (httpResponse.statusCode !== 200) {
                 Utils.updateStatusBar("Hot load [Fail]", `响应状态码不等于200【${httpResponse.statusCode}】`);
                 return;
             }
             //{"resultCode":60000,"message":"成功热部署：0个应用包；更新的应用包名称： "}
-            Utils.log("body : "+ body);
+            Utils.log("body : " + body);
             let res = JSON.parse(body);
-            if(res.resultCode === 60000){
+            if (res.resultCode === 60000) {
                 success(res.message);
-            }else{
+            } else {
                 Utils.updateStatusBar("Hot load [Fail]", res.message);
-                window.showErrorMessage("Hot load fail","please check you config",res.message);
+                window.showErrorMessage("Hot load fail", "please check you config", res.message);
             }
         });
     }
@@ -232,7 +225,7 @@ class Utils {
      * @param success   成功回调，返回JSESSIONID
      * @param error 错误回调
      */
-    static loginV5(parms,success,error=function(){}){
+    static loginV5(parms, success, error = function () { }) {
         // 登录 url
         // http://127.0.0.1/seeyon/main.do?method=login
         /**
@@ -252,10 +245,10 @@ class Utils {
          */
         Utils.updateStatusBar("Hot load [start login V5]", "开始登录V5");
         request.post({
-            url:`${parms.address}/seeyon/main.do?method=login`,
-            headers : {
+            url: `${parms.address}/seeyon/main.do?method=login`,
+            headers: {
                 ...Utils.defaultHeaders,
-                "Host": `${parms.address.replace("http://","").replace("https://","")}`,
+                "Host": `${parms.address.replace("http://", "").replace("https://", "")}`,
                 "Origin": `${parms.address}`,
                 "Referer": `${parms.address}/seeyon/main.do`
             },
@@ -270,31 +263,31 @@ class Utils {
                 "loginName": parms.userName,
                 "login_password": parms.passwd
             }
-        }, function(err,httpResponse,body){
+        }, function (err, httpResponse, body) {
             if (err !== null) {
                 Utils.log(err);
                 Utils.updateStatusBar("Hot load [Fail]", err);
                 error();
                 return;
             }
-            if(httpResponse.statusCode !== 302 /** 302 登录成功重定向 */
+            if (httpResponse.statusCode !== 302 /** 302 登录成功重定向 */
                 || !ClassUtils.isUndefined(httpResponse.headers["LoginError"]) /** header：LoginError：1表示登录失败 */
-                || httpResponse.headers["loginok"] !== "ok"  /** loginok:"ok" 表示登录成功 */ ){
+                || httpResponse.headers["loginok"] !== "ok"  /** loginok:"ok" 表示登录成功 */) {
                 Utils.updateStatusBar("Hot load [Fail]", "systen登录失败,请设置正确的system账号密码");
                 error();
                 return;
             }
 
-            let cookies:string[] = httpResponse.headers["set-cookie"];
+            let cookies: string[] = httpResponse.headers["set-cookie"];
             let jsessionId = "";
             //JSESSIONID=12DE33EE6F47E9C061F449A34AF3FE83;
-            cookies.forEach(function(val,index,datas){
-                if(val.indexOf("JSESSIONID") > -1){//正则获取JSESSIONID
-                    jsessionId =  val.replace(/.*JSESSIONID=([^;]*);.*/gi,"$1");
+            cookies.forEach(function (val, index, datas) {
+                if (val.indexOf("JSESSIONID") > -1) {//正则获取JSESSIONID
+                    jsessionId = val.replace(/.*JSESSIONID=([^;]*);.*/gi, "$1");
                 }
             });
             Utils.updateStatusBar("Hot load [Login sucess]", `systen登录成功，JSESSIONID:${jsessionId}`);
-            Utils.log("jsessionId : "+ jsessionId);
+            Utils.log("jsessionId : " + jsessionId);
             success(jsessionId);
         });
     }
@@ -315,6 +308,122 @@ class Utils {
             appPath = maybePath.fsPath;
         }
         return appPath;
+    }
+    /**
+     * 读取 Matedata文件
+     * @param fileName 
+     */
+    static readMatedata(fileName):any{
+        let json = Utils.readJson(fileName);
+        if(ClassUtils.isUndefinedOrNull(json)){
+            return;
+        }
+        Utils.log("src matedata",json);
+        let targetObject = Utils.flatMap(json,"",{});
+        Utils.log("flatMap matedata",targetObject);
+        targetObject = Utils.replacePlaceHolder(targetObject,{});
+        Utils.log("placeHolder matedata",targetObject);
+        return targetObject;
+    }
+
+    private static replacePlaceHolder(srcObject: any,targetObject:any): any {
+        let buildversion = workspace.getConfiguration("seeyon.cmp-helper").get("buildversion", true);
+        let buildversionStr = "";
+        if (buildversion) {
+            buildversionStr = "?bd_t=" + new Date().getTime() + "";
+        }
+        for (const key in srcObject) {
+            let element = srcObject[key];
+            if (ClassUtils.isString(element)) {
+                element = element.replace(/\$\{data:buildversion\}/g, buildversionStr);
+                if (/\${data:([^\}]+)\}/g.test(element)) {
+                    let ret = null,
+                        regx = /\$\{data:([^\}]+)\}/g;
+                    while ((ret = regx.exec(element)) !== null) {
+                        let p = srcObject[ret[1]];
+                        let repRegx = new RegExp(`\\$\\{data\\:(${Utils.replaceReg(ret[1])})\\}`, "g");
+                        element = element.replace(repRegx, p);
+                    }
+                }
+            }
+            targetObject[key] = element;
+        }
+        return targetObject;
+    }
+    private static replaceReg(rep: any) {
+        return rep.replace(/\\/g,"\\\\")
+                .replace(/\(/g,"\\(")
+                .replace(/\#/g,"\\#")
+                .replace(/\)/g,"\\)")
+                .replace(/\//g,"\\/")
+                .replace(/\./g,"\\.")
+                .replace(/\*/g,"\\*")
+                .replace(/\+/g,"\\+")
+                .replace(/\?/g,"\\?")
+                .replace(/\|/g,"\\|")
+                .replace(/\[/g,"\\[")
+                .replace(/\]/g,"\\]")
+                .replace(/\{/g,"\\{")
+                .replace(/\}/g,"\\}")
+                .replace(/\^/g,"\\^")
+                .replace(/\$/g,"\\$");
+    }
+    /**
+     * 读取Json文件
+     * @param jsonFileName 
+     */
+    private static readJson(jsonFileName:string){
+        if (!fs.existsSync(jsonFileName)) {
+            return;
+        }
+        try {
+            return JSON.parse(fs.readFileSync(jsonFileName, {
+                "encoding": "utf8",
+                "flag": "r"//读模式
+            }).replace(/\n/g, ''));
+        } catch (error) {
+            let msg = `读取JSON文件[${jsonFileName}]失败,请检查JSON文件是否有误，或者JSON编码格式为UTF8 BOM`;
+            window.showErrorMessage(msg);
+            Utils.log(msg, error);
+        }
+        return;
+    }
+    /**
+     * 是否为扁平对象
+     * @param data 
+     */
+    private static isFlatObject(data:any):boolean{
+        if(ClassUtils.isString(data)
+            || ClassUtils.isBoolean(data)
+            || ClassUtils.isNumber(data)
+            || ClassUtils.isDate(data)
+            || ClassUtils.isFunction(data)
+            || ClassUtils.isUndefinedOrNull(data)
+            || ClassUtils.isArray(data)){
+            return true;
+        }
+        return false;
+    }
+    /**
+     * 将json对象扁平化
+     * @param json 
+     * @param parentKey 
+     * @param targetObject 
+     */
+    private static flatMap(json: any, parentKey: any, targetObject: any) {
+        if (Utils.isFlatObject(json)) {
+            targetObject[parentKey] = json;
+            return targetObject;
+        }
+        for (const key in json) {
+            let eachObj = json[key];
+            let newParentKey = `${parentKey}.${key}`;
+            if (parentKey === "") {
+                newParentKey = key;
+            }
+            targetObject = Utils.flatMap(eachObj, `${newParentKey}`, targetObject);
+        }
+        return targetObject;
     }
 }
 

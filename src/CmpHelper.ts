@@ -5,10 +5,8 @@ import SyncUtils from './SyncUtils';
 import Utils from './Utils';
 import BuildUtils from './BuildUtils';
 
-
 export function activate(context: vscode.ExtensionContext) {
     Utils.init();
-
     Utils.log('cmp-helper is active!');
     // 打包到cmp zip
     let cmpPackage = vscode.commands.registerCommand('extension.cmpPackage', (uri) => {
@@ -17,7 +15,6 @@ export function activate(context: vscode.ExtensionContext) {
     // 打包到wechat
     let wechatPackage = vscode.commands.registerCommand('extension.wechatPackage', (uri) => {
         CmpPackageUtils.doPackage(uri, PackageType.Wechat);
-        BuildUtils.propertiesToJs("D:\\project_spaces\\seeyon_v5_trunk\\apps-vreport-h5\\i18n\\report_zh_CN.properties", "D:\\project_spaces\\seeyon_v5_trunk\\apps-vreport-h5\\i18n\\report_zh_CN.js");
     });
     // 保存即时更新
     let autoSyncStatic = vscode.workspace.onDidSaveTextDocument((e: vscode.TextDocument) => {
@@ -44,7 +41,6 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(chToUnicode);
     context.subscriptions.push(unicodeToCh);
     context.subscriptions.push(propertiesToJs);
-
     Utils.log('cmp-helper is Ready!');
 }
 

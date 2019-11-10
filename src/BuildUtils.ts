@@ -5,7 +5,7 @@ import * as readline from "readline";
 import { ParsedPath } from "path";
 import Utils from "./Utils";
 import DateFormat from "./DateFormat";
-import { window, Range, Selection,workspace } from "vscode";
+import { window, Range, Selection, workspace } from "vscode";
 import ClassUtils from "./ClassUtils";
 /**
  * 没有文件异常
@@ -27,17 +27,17 @@ class BuildUtils {
      * @param uri 
      */
     static cvtUnicodeToChinese(uri: any) {
-        BuildUtils.doCovert(uri,false);
+        BuildUtils.doCovert(uri, false);
     }
     /**
      * 中文转换为 Unicode
      * @param uri 
      */
     static cvtChineseToUnicode(uri: any) {
-        const unicodeUpperCase = workspace.getConfiguration("seeyon.cmp-helper").get("properties.unicode.upperCase",true);
-        BuildUtils.doCovert(uri,true,unicodeUpperCase);
+        const unicodeUpperCase = workspace.getConfiguration("seeyon.cmp-helper").get("properties.unicode.upperCase", true);
+        BuildUtils.doCovert(uri, true, unicodeUpperCase);
     }
-    static build(src: string, targetPath: string, pgType: PackageType) {
+    static build(uri: any, pgType: PackageType) {
 
 
     }
@@ -57,12 +57,12 @@ class BuildUtils {
      * @param src 源文件
      * @param target 目標文件[如果为空表示生成到当前文件的文件目录]
      */
-    static propertiesToJs(src: string, target: string|undefined = undefined) {
+    static propertiesToJs(src: string, target: string | undefined = undefined) {
         if (!fs.existsSync(src)) {
             throw new NosuchFileException("文件不存在：" + src);
         }
         let targetFileName = target;
-        if(ClassUtils.isUndefined(target)){
+        if (ClassUtils.isUndefined(target)) {
             let parsedPath: ParsedPath = BuildUtils.parseAndcreateParent(src);
             targetFileName = `${parsedPath.dir}${path.sep}${parsedPath.name}.js`;
         }
@@ -104,16 +104,16 @@ class BuildUtils {
         }
         return parsePath;
     }
-    private static doCovert(uri:any,toUnicode:boolean,upperCase:boolean = true){
+    private static doCovert(uri: any, toUnicode: boolean, upperCase: boolean = true) {
         let filePath = Utils.getPathOrActivepath(uri);
         if (window.activeTextEditor && filePath === window.activeTextEditor.document.fileName) {
             const editor = window.activeTextEditor;
             const document = editor.document;
             const text = document.getText();
             const newText = text.split(/\r?\n/g).map(line => {
-                if(toUnicode){
-                    return BuildUtils.toUnicode(line,upperCase);
-                }else{
+                if (toUnicode) {
+                    return BuildUtils.toUnicode(line, upperCase);
+                } else {
                     return BuildUtils.toChinese(line);
                 }
             }).join("\n");
@@ -124,7 +124,7 @@ class BuildUtils {
             //重新选择范围
             editor.selection = new Selection(0, 0, 0, 0);
         } else {
-            BuildUtils.cvtFile(filePath, toUnicode,upperCase);
+            BuildUtils.cvtFile(filePath, toUnicode, upperCase);
         }
     }
     private static cvtFile(filePath: string, toUnicode: boolean, upperCase: boolean = true) {
