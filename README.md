@@ -40,6 +40,14 @@
 
 ![文件自动同步](https://raw.githubusercontent.com/shuqiyige/cmp-helper/master/doc/autoSync.gif "文件自动同步")
 
+> properties文件Unicode与中文相互转换
+
+![properties文件Unicode与中文相互转换](https://raw.githubusercontent.com/shuqiyige/cmp-helper/master/doc/unicodeCvt.gif "properties文件Unicode与中文相互转换")
+
+> properties文件转换为JS文件
+
+![properties文件转换为JS文件](https://raw.githubusercontent.com/shuqiyige/cmp-helper/master/doc/propTojs.gif "properties文件转换为JS文件")
+
 
 ### m3Tools包含文件一览
 
