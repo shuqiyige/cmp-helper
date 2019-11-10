@@ -2,7 +2,7 @@
   "name": "cmp-helper",
   "displayName": "cmp-helper",
   "description": "cmp 打包同步文件助手",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "publisher": "cmpHelper",
   "author": {
     "name": "shuqi"
@@ -21,22 +21,83 @@
     "commands": [
       {
         "command": "extension.cmpPackage",
-        "title": "cmp 打包"
+        "title": "CMP编译打包"
       },
       {
         "command": "extension.wechatPackage",
-        "title": "wechat 打包"
+        "title": "Wechat编译打包"
+      },
+      {
+        "command": "extension.chToUnicode",
+        "title": "中文转Unicode"
+      },
+      {
+        "command": "extension.unicodeToCh",
+        "title": "Unicode转中文"
+      },
+      {
+        "command": "extension.propertiesToJs",
+        "title": "properties转javascript文件"
       }
     ],
     "menus": {
       "explorer/context": [
         {
           "command": "extension.cmpPackage",
-          "group": "1_modification"
+          "group": "1_modification@1"
         },
         {
           "command": "extension.wechatPackage",
-          "group": "1_modification"
+          "group": "1_modification@2"
+        },
+        {
+          "command": "extension.chToUnicode",
+          "group": "1_modification@3",
+          "when": "resourceExtname == .properties"
+        },
+        {
+          "command": "extension.unicodeToCh",
+          "group": "1_modification@4",
+          "when": "resourceExtname == .properties"
+        },
+        {
+          "command": "extension.propertiesToJs",
+          "group": "1_modification@5",
+          "when": "resourceExtname == .properties"
+        }
+      ],
+      "editor/title/context": [
+        {
+          "command": "extension.chToUnicode",
+          "group": "1_modification@2",
+          "when": "resourceExtname == .properties"
+        },
+        {
+          "command": "extension.unicodeToCh",
+          "group": "1_modification@3",
+          "when": "resourceExtname == .properties"
+        },
+        {
+          "command": "extension.propertiesToJs",
+          "group": "1_modification@4",
+          "when": "resourceExtname == .properties"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "extension.chToUnicode",
+          "group": "1_modification@2",
+          "when": "resourceExtname == .properties"
+        },
+        {
+          "command": "extension.unicodeToCh",
+          "group": "1_modification@3",
+          "when": "resourceExtname == .properties"
+        },
+        {
+          "command": "extension.propertiesToJs",
+          "group": "1_modification@4",
+          "when": "resourceExtname == .properties"
         }
       ]
     },
@@ -78,6 +139,7 @@
   },
   "dependencies": {
     "compressing": "^1.4.0",
+    "date-format": "^3.0.0",
     "request": "^2.88.0"
   },
   "icon": "images/logo.png",

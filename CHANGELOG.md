@@ -2,8 +2,11 @@
 ### coming 
 
 - 去掉m3_tools依赖
-- 微协同自动热部署html，s3js,properties
+- 微协同自动热部署html，s3js
 
+# v 0.3.x 2019-11-05
+ - 支持properties文件同步
+ - 只unicode和中文之前转换
 
 # v 0.2.x 2019-11-05
  - 增加cmp自动打包发布

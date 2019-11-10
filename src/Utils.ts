@@ -78,7 +78,7 @@ class Utils {
      * @param text 显示的文字
      * @param tooltip tips
      */
-    static updateStatusBar(text: string = "error", tooltip: string = "unknown error") {
+    static updateStatusBar(text: string = "error", tooltip: string = "") {
         if (ClassUtils.isUndefined(Utils.statusBar)) {
             return;
         }
@@ -93,7 +93,7 @@ class Utils {
                 timeer = null;
                 Utils.statusBar.text = 'CmpHelper: Ready';
                 Utils.statusBar.tooltip = 'CmpHelper: cmp helper is Ready';
-            }, 20000);
+            }, 100000);
         } catch (e) {
         }
     }
@@ -101,7 +101,7 @@ class Utils {
     /**
      * 支持同步的文件的后缀
      */
-    static allowSyncTypes: string[] = ["js", "css", "json", "svg", "ttf", "eot", "woff", "png", "jpg", "bmp", "jpeg", "map"];
+    static allowSyncTypes: string[] = ["js", "css", "json", "svg", "ttf", "eot", "woff", "png", "jpg", "bmp", "jpeg", "map","properties"];
 
     /**
      * @param fileName 判断文件是否支持同步
@@ -202,7 +202,7 @@ class Utils {
             },
             form: {
                 "managerMethod": "reloadV5Apps",
-                "arguments": '[{"reset":0}]'//JSON字符串
+                "arguments": JSON.stringify([{"reset":0}])//JSON字符串
             }
         }, function(err,httpResponse,body){
             if (err !== null) {
@@ -298,7 +298,24 @@ class Utils {
             success(jsessionId);
         });
     }
-}
 
+    /**
+     *  获取当前的工作目录
+     * @param maybePath 可能是uri
+     */
+    static getPathOrActivepath(maybePath: any): string | null {
+        let appPath = null;
+        if (maybePath === null) {
+            try {
+                appPath = window.activeTextEditor.document.fileName;
+            } catch (error) {
+                Utils.log(error);
+            }
+        } else {
+            appPath = maybePath.fsPath;
+        }
+        return appPath;
+    }
+}
 
 export default Utils;

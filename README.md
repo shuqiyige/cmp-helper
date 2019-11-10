@@ -10,6 +10,7 @@
     "address":"http://127.0.0.1",//v5的ip地址，默认【http://127.0.0.1】
     "passwd":"123456",//system账号密码，默认【123456】
     "autoPublish": true,//是否自动发布cmp zip包，默认【true】
+    "properties.unicode.upperCase":true,// properties 转Unicode是否自动转大写[默认true]
     "packageApps":[{
         "appName":"考勤",
         "path":"D:\\project_spaces\\seeyon_v5_trunk\\apps-attendance-h5"

@@ -1,7 +1,9 @@
 import * as vscode from 'vscode';
-import IPackage ,{PackageType,MateInfo} from "./IPackage";
+import IPackage ,{MateInfo} from "./IPackage";
 import ClassUtils from "./ClassUtils";
 import Utils from "./Utils";
+import {PackageType} from "./Enums";
+import { utils } from 'mocha';
 
 class CmpPackageUtils {
 
@@ -59,7 +61,7 @@ class CmpPackageUtils {
         if (type === PackageType.Cmp) {
             packageName = "cmp";
         }
-        let appPath = CmpPackageUtils.getPath(uri);
+        let appPath = Utils.getPathOrActivepath(uri);
         if (ClassUtils.isUndefinedOrNull(appPath)) {
             Utils.updateStatusBar("unknown package path",`${packageName} package cancel for unknown package path!`);
             return;
@@ -67,23 +69,6 @@ class CmpPackageUtils {
         Utils.log(`${packageName} package start!`);
         CmpPackageUtils.doPackage_(appPath, type);
         Utils.log(`${packageName} package end!`);
-    }
-    /**
-     * 获取当前的工作目录
-     * @param maybePath 可能是目录
-     */
-    private static getPath(maybePath: any): string | null {
-        let appPath = null;
-        if (maybePath === null) {
-            try {
-                appPath = vscode.window.activeTextEditor.document.fileName;
-            } catch (error) {
-                Utils.log(error);
-            }
-        } else {
-            appPath = maybePath.fsPath;
-        }
-        return appPath;
     }
 }
 

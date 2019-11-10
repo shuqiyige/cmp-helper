@@ -3,6 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import Utils from './Utils';
 import ClassUtils from './ClassUtils';
+import BuildUtils from './BuildUtils';
 
 class SyncUtils {
     /**
@@ -24,8 +25,18 @@ class SyncUtils {
         //${seeyon}m3/apps/v5/${apppath}
         let relativePath = fileName.substr(appPath.length);
         let targetPath = `${v5Runtime}${path.sep}m3${path.sep}apps${path.sep}${manifestJson.team}${path.sep}${manifestJson.bundleName}${relativePath}`;
+
+        const isProperties = fileName.endsWith("properties");
+        if(isProperties){
+            targetPath = targetPath.replace(/\.properties$/,".js");
+        }
+
         try {
-            fs.writeFileSync(targetPath, fs.readFileSync(fileName));
+            if(isProperties){
+                BuildUtils.propertiesToJs(fileName,targetPath);
+            }else{
+                fs.writeFileSync(targetPath, fs.readFileSync(fileName));
+            }
             Utils.updateStatusBar("sync file success！", fileName + " --> " + targetPath);
             Utils.log("sync file success!", fileName + " --> " + targetPath);
         } catch (error) {
@@ -33,6 +44,8 @@ class SyncUtils {
             Utils.log("sync file fail!", error);
         }
     }
+
+
 
 }
 

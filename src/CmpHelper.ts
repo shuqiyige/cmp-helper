@@ -1,8 +1,9 @@
 import * as vscode from 'vscode';
 import CmpPackageUtils from "./PackageUtils";
-import { PackageType } from "./IPackage";
+import { PackageType } from "./Enums";
 import SyncUtils from './SyncUtils';
 import Utils from './Utils';
+import BuildUtils from './BuildUtils';
 
 
 export function activate(context: vscode.ExtensionContext) {
@@ -16,6 +17,7 @@ export function activate(context: vscode.ExtensionContext) {
     // 打包到wechat
     let wechatPackage = vscode.commands.registerCommand('extension.wechatPackage', (uri) => {
         CmpPackageUtils.doPackage(uri, PackageType.Wechat);
+        BuildUtils.propertiesToJs("D:\\project_spaces\\seeyon_v5_trunk\\apps-vreport-h5\\i18n\\report_zh_CN.properties", "D:\\project_spaces\\seeyon_v5_trunk\\apps-vreport-h5\\i18n\\report_zh_CN.js");
     });
     // 保存即时更新
     let autoSyncStatic = vscode.workspace.onDidSaveTextDocument((e: vscode.TextDocument) => {
@@ -24,9 +26,24 @@ export function activate(context: vscode.ExtensionContext) {
             SyncUtils.doSync(e.fileName);
         }
     });
+    // 中文转unicode
+    let chToUnicode = vscode.commands.registerCommand('extension.chToUnicode', (uri) => {
+        BuildUtils.cvtChineseToUnicode(uri);
+    });
+    // unicode转中文
+    let unicodeToCh = vscode.commands.registerCommand('extension.unicodeToCh', (uri) => {
+        BuildUtils.cvtUnicodeToChinese(uri);
+    });
+    // java 的properties文件转换为js 的国际化
+    let propertiesToJs = vscode.commands.registerCommand('extension.propertiesToJs', (uri) => {
+        BuildUtils.propertiesToJsCommend(uri);
+    });
     context.subscriptions.push(cmpPackage);
     context.subscriptions.push(wechatPackage);
     context.subscriptions.push(autoSyncStatic);
+    context.subscriptions.push(chToUnicode);
+    context.subscriptions.push(unicodeToCh);
+    context.subscriptions.push(propertiesToJs);
 
     Utils.log('cmp-helper is Ready!');
 }
