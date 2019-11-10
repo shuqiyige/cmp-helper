@@ -14,18 +14,8 @@ class NosuchFileException implements Error {
     constructor(info: string) {
         this.message = info;
     }
-    readonly columnNumber: number;
-    readonly fileName: string;
-    readonly lineNumber: number;
     message: string;
     name: string;
-    dumpStack() {
-    }
-    getStackTrace(): any[] {
-        return [];
-    }
-    printStackTrace() {
-    }
 }
 
 /**
@@ -44,7 +34,7 @@ class BuildUtils {
      * @param uri 
      */
     static cvtChineseToUnicode(uri: any) {
-        const unicodeUpperCase = workspace.getConfiguration("seeyon.cmp-helper").get("properties.unicode.upperCase",true)
+        const unicodeUpperCase = workspace.getConfiguration("seeyon.cmp-helper").get("properties.unicode.upperCase",true);
         BuildUtils.doCovert(uri,true,unicodeUpperCase);
     }
     static build(src: string, targetPath: string, pgType: PackageType) {
@@ -57,7 +47,7 @@ class BuildUtils {
      */
     static propertiesToJsCommend(uri: any) {
         let path = Utils.getPathOrActivepath(uri);
-        if (path == null) {
+        if (path === null) {
             return;
         }
         BuildUtils.propertiesToJs(path);
@@ -67,12 +57,12 @@ class BuildUtils {
      * @param src 源文件
      * @param target 目標文件[如果为空表示生成到当前文件的文件目录]
      */
-    static propertiesToJs(src: string, target1: string|undefined = undefined) {
+    static propertiesToJs(src: string, target: string|undefined = undefined) {
         if (!fs.existsSync(src)) {
             throw new NosuchFileException("文件不存在：" + src);
         }
-        let targetFileName = target1;
-        if(ClassUtils.isUndefined(target1)){
+        let targetFileName = target;
+        if(ClassUtils.isUndefined(target)){
             let parsedPath: ParsedPath = BuildUtils.parseAndcreateParent(src);
             targetFileName = `${parsedPath.dir}${path.sep}${parsedPath.name}.js`;
         }
@@ -104,7 +94,7 @@ class BuildUtils {
         rline.on("close", () => {
             input.close();
             output.close();
-        })
+        });
     }
 
     static parseAndcreateParent(fileDir: string): ParsedPath {

@@ -3,7 +3,6 @@ import IPackage ,{MateInfo} from "./IPackage";
 import ClassUtils from "./ClassUtils";
 import Utils from "./Utils";
 import {PackageType} from "./Enums";
-import { utils } from 'mocha';
 
 class CmpPackageUtils {
 
