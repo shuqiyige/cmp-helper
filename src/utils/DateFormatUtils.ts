@@ -1,4 +1,4 @@
-class DateFormat {
+class DateFormatUtils {
     /**
      * 日期格式化：data.format("yyyy-MM-dd HH:mm:ss") q:季度(h也表示24小时制)
      *
@@ -50,4 +50,4 @@ class DateFormat {
         return new Date(parseInt(sdate[0]), parseInt(sdate[1]) - 1, parseInt(sdate[2]), parseInt(stime[0]), parseInt(stime[1]), parseInt(stime[2]));
     }
 }
-export default DateFormat;
+export default DateFormatUtils;

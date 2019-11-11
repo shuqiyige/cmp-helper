@@ -2,16 +2,19 @@ import * as fs from "fs";
 import * as path from "path";
 import * as compressing from "compressing";
 import * as child_process from "child_process";
-import { window } from "vscode";
+// import { window } from "vscode";
 import Utils from "./Utils";
-import { PackageType } from "./Enums";
-import BuildUtils from "./BuildUtils";
+import PackType from "./enums/PackType";
+import PackInfo from "./dto/PackInfo";
+import BuildUtils from "./utils/BuildUtils";
+import VSCodeUtils from "./utils/VSCodeUtils";
+import LogFactory from "./utils/LogFactory";
 
 export default abstract class IPackage {
     // 需要打包的app目录
-    protected mateInfo: MateInfo;
+    protected mateInfo: PackInfo;
 
-    constructor(mateInfo: MateInfo) {
+    constructor(mateInfo: PackInfo) {
         this.mateInfo = mateInfo;
     }
     /**
@@ -23,8 +26,8 @@ export default abstract class IPackage {
      * @param packageType 打包类型
      * @param mateInfo
      */
-    static getIPackage(packageType: PackageType, mateInfo: MateInfo): IPackage {
-        if (packageType === PackageType.Wechat) {
+    static getIPackage(packageType: PackType, mateInfo: PackInfo): IPackage {
+        if (packageType === PackType.Wechat) {
             return new WechatPackage(mateInfo);
         }
         return new CmpPackage(mateInfo);
@@ -48,7 +51,7 @@ export default abstract class IPackage {
             try {
                 fs.rmdirSync(folder);
             } catch (error) {
-                Utils.log("删除临时文件出错", error);
+                LogFactory.log("删除临时文件出错", error);
             }
         }
     }
@@ -97,19 +100,19 @@ class CmpPackage extends IPackage {
                 try {
                     IPackage.deleteFolder(tempDir);//删除临时目录
                 } catch (error) {
-                    Utils.log("删除临时文件出错", error);
+                    LogFactory.log("删除临时文件出错", error);
                 }
                 let msg = `${v5OutPath} package success!`;
-                Utils.updateStatusBar(`${this.mateInfo.appName} cmp package success`, msg);
+                LogFactory.updateStatus(`${this.mateInfo.appName} cmp package success`, msg);
                 if (!this.mateInfo.autoPublish) {
-                    window.showInformationMessage(msg);
+                    LogFactory.showAlert(msg);
                 } else {
                     Utils.doPublish(this.mateInfo.address, this.mateInfo.passwd);
                 }
             }).catch(error => {
                 let msg = `${v5OutPath} package fail!`;
-                window.showInformationMessage(msg);
-                Utils.updateStatusBar(`${this.mateInfo.appName} cmp package fail`, error);
+                LogFactory.showError(msg);
+                LogFactory.updateStatus(`${this.mateInfo.appName} cmp package fail`, error);
             });
         });
         return true;
@@ -143,34 +146,17 @@ class WechatPackage extends IPackage {
                 try {
                     fs.unlinkSync(outZip);
                 } catch (error) {
-                    Utils.log("删除临时文件出错", error);
+                    LogFactory.log("删除临时文件出错", error);
                 }
                 let msg = `${v5OutPath} package success!`;
-                window.showInformationMessage(msg);
-                Utils.updateStatusBar(`${this.mateInfo.appName} wechat package success`, msg);
+                LogFactory.showAlert(msg);
+                LogFactory.updateStatus(`${this.mateInfo.appName} wechat package success`, msg);
             }).catch(error => {
                 let msg = `${v5OutPath} package fail!`;
-                window.showInformationMessage(msg);
-                Utils.updateStatusBar(`${this.mateInfo.appName} wechat package fail`, error);
+                LogFactory.showError(msg);
+                LogFactory.updateStatus(`${this.mateInfo.appName} wechat package fail`, error);
             });
         return true;
     }
 
-}
-/**
- * 要打包的元数据
- */
-export class MateInfo {
-    public appId: string | undefined;
-    public appName: string | undefined;
-    public appCurrentPath: string | undefined;
-    public v5Runtime: string | undefined;
-    public m3Tools: string | undefined;
-    public bundleName: string | undefined;
-    public team: string | undefined;
-    public buildversion: boolean = true;
-
-    public passwd: string | undefined = "123456";
-    public address: string | undefined = "127.0.0.1";
-    public autoPublish: boolean = true;
 }

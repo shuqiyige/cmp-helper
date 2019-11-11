@@ -2,9 +2,10 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 import * as path from 'path';
 import { ParsedPath } from 'path';
-import Utils from './Utils';
-import ClassUtils from './ClassUtils';
-import BuildUtils from './BuildUtils';
+import Utils from '../Utils';
+import ClassUtils from '../utils/ClassUtils';
+import BuildUtils from '../utils/BuildUtils';
+import LogFactory from '../utils/LogFactory';
 
 /**
  * 同步文件工具类
@@ -15,7 +16,7 @@ class SyncUtils {
      * @param fileName 同步文件
      */
     static doSync(fileName: string) {
-        Utils.updateStatusBar(`start sync file[${fileName}]`);
+        LogFactory.updateStatus(`start sync file[${fileName}]`);
         if (!Utils.isConfig()) {
             return;
         }
@@ -37,16 +38,16 @@ class SyncUtils {
         let parsePath: ParsedPath = path.parse(fileName);
         switch(parsePath.ext.toLowerCase()){
             case ".html":
-                Utils.log("sync html file " + fileName);
+                LogFactory.log("sync html file " + fileName);
                 break;
             case ".s3js":
-                Utils.log("sync s3js file " + fileName);
+                LogFactory.log("sync s3js file " + fileName);
                 break;
             case ".data":
                 if (parsePath.base === "wechat_commondata.data") {
                     SyncUtils.wechatMateDataCache[fileName] = Utils.readMatedata(fileName);
                 }
-                Utils.log("reload mate data file " + fileName);
+                LogFactory.log("reload mate data file " + fileName);
                 break;
         }
     }
@@ -72,16 +73,13 @@ class SyncUtils {
             } else {
                 fs.writeFileSync(targetPath, fs.readFileSync(fileName));
             }
-            Utils.updateStatusBar("sync file success！", fileName + " --> " + targetPath);
-            Utils.log("sync file success!", fileName + " --> " + targetPath);
+            LogFactory.updateStatus("sync file success！", fileName + " --> " + targetPath);
+            LogFactory.log("sync file success!", fileName + " --> " + targetPath);
         } catch (error) {
-            Utils.updateStatusBar("sync file fail！", error);
-            Utils.log("sync file fail!", error);
+            LogFactory.updateStatus("sync file fail！", error);
+            LogFactory.log("sync file fail!", error);
         }
     }
-
-
-
 }
 
 export default SyncUtils;

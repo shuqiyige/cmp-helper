@@ -1,22 +1,25 @@
 import * as vscode from 'vscode';
-import IPackage, { MateInfo } from "./IPackage";
-import ClassUtils from "./ClassUtils";
+import IPackage from "./IPackage";
+import ClassUtils from "./utils/ClassUtils";
 import Utils from "./Utils";
-import { PackageType } from "./Enums";
+import PackType from "./enums/PackType";
+import PackInfo from './dto/PackInfo';
+import VSCodeUtils from './utils/VSCodeUtils';
+import LogFactory from './utils/LogFactory';
 
 class CmpPackageUtils {
 
-    static doPackage_(_appPath: any, type: PackageType) {
+    static doPackage_(_appPath: any, type: PackType) {
         if (!Utils.isConfig()) {
             return;
         }
-        let mateinfo: MateInfo = new MateInfo();
+        let mateinfo: PackInfo = new PackInfo();
         mateinfo.appCurrentPath = Utils.getAppRootPath(_appPath);
 
         // not found config
         if (ClassUtils.isUndefinedOrNull(mateinfo.appCurrentPath)) {
             let msg = `seeyon.cmp-helper.packageApps not matched current path [${_appPath}]!`;
-            Utils.updateStatusBar("path not match", msg);
+            LogFactory.updateStatus("path not match", msg);
             return;
         }
         // read config  manifest.json
@@ -39,14 +42,14 @@ class CmpPackageUtils {
 
         if (ClassUtils.isUndefinedOrNull(mateinfo.v5Runtime)) {
             let msg = `seeyon.cmp-helper.v5Runtime is empty!`;
-            Utils.updateStatusBar(msg, msg);
+            LogFactory.updateStatus(msg, msg);
             return;
         }
 
         mateinfo.m3Tools = vscode.workspace.getConfiguration("seeyon.cmp-helper").get("m3Tools", undefined);
         if (ClassUtils.isUndefinedOrNull(mateinfo.m3Tools)) {
             let msg = `seeyon.cmp-helper.m3Tools is empty!`;
-            Utils.updateStatusBar(msg, msg);
+            LogFactory.updateStatus(msg, msg);
             return;
         }
         IPackage.getIPackage(type, mateinfo).doPackage();
@@ -55,20 +58,19 @@ class CmpPackageUtils {
      * @param uri 打包的URI
      * @param type 打包类型【cmp or wechat】
      */
-    static doPackage(uri: any, type: PackageType): void {
+    static doPackage(uri: any, type: PackType): void {
         let packageName = "wechat";
-        if (type === PackageType.Cmp) {
+        if (type === PackType.Cmp) {
             packageName = "cmp";
         }
-        let appPath = Utils.getPathOrActivepath(uri);
+        let appPath = VSCodeUtils.getPathOrActivepath(uri);
         if (ClassUtils.isUndefinedOrNull(appPath)) {
-            Utils.updateStatusBar("unknown package path", `${packageName} package cancel for unknown package path!`);
+            LogFactory.updateStatus("unknown package path", `${packageName} package cancel for unknown package path!`);
             return;
         }
-        Utils.log(`${packageName} package start!`);
+        LogFactory.log(`${packageName} package start!`);
         CmpPackageUtils.doPackage_(appPath, type);
-        Utils.log(`${packageName} package end!`);
+        LogFactory.log(`${packageName} package end!`);
     }
 }
-
 export default CmpPackageUtils;

@@ -2,29 +2,13 @@ import * as path from "path";
 import * as fs from "fs";
 import * as request from "request";
 import { OutputChannel, StatusBarAlignment, StatusBarItem, window, workspace, WorkspaceConfiguration } from "vscode";
-import ClassUtils from "./ClassUtils";
+import ClassUtils from "./utils/ClassUtils";
+import VSCodeUtils from "./utils/VSCodeUtils";
+import LogFactory from "./utils/LogFactory";
 
-let timeer = null;
+
 
 class Utils {
-
-    private static statusBar: StatusBarItem | undefined;
-    private static logger: OutputChannel | undefined;
-
-    /**
-     * 初始化 状态栏实例
-     * @param statusBarItem
-     */
-    static init() {
-        let statusBarItem = window.createStatusBarItem(StatusBarAlignment.Left, 1);
-        //statusBarItem.command = '';//可以设置命令
-        statusBarItem.show();
-        Utils.statusBar = statusBarItem;
-        Utils.statusBar.text = 'CmpHelper is Ready';
-        Utils.updateStatusBar("Ready", " cmp helper is Ready");
-        //日志
-        Utils.logger = window.createOutputChannel('CmpHelper');
-    }
 
     /**
      * 读取 manifest.json
@@ -48,48 +32,25 @@ class Utils {
         const packageApps = myConfigs.get("packageApps", []);
         if (packageApps.length === 0) {
             let msg = `seeyon.cmp-helper.packageApps is empty!`;
-            Utils.updateStatusBar("config is empty", msg);
+            LogFactory.updateStatus("config is empty", msg);
             return false;
         }
         const v5Runtime = myConfigs.get("v5Runtime", undefined);
         if (ClassUtils.isUndefinedOrNull(v5Runtime)) {
             let msg = `seeyon.cmp-helper.v5Runtime is empty!`;
-            Utils.updateStatusBar("config is empty", msg);
+            LogFactory.updateStatus("config is empty", msg);
             return false;
         }
         const m3Tools = myConfigs.get("m3Tools", undefined);
         if (ClassUtils.isUndefinedOrNull(m3Tools)) {
             let msg = `seeyon.cmp-helper.m3Tools is empty!`;
-            Utils.updateStatusBar("config is empty", msg);
+            LogFactory.updateStatus("config is empty", msg);
             return false;
         }
         return true;
     }
 
-    /**
-     * 更新状态栏
-     * @param text 显示的文字
-     * @param tooltip tips
-     */
-    static updateStatusBar(text: string = "error", tooltip: string = "") {
-        if (ClassUtils.isUndefined(Utils.statusBar)) {
-            return;
-        }
-        Utils.statusBar.text = 'CmpHelper: ' + text;
-        Utils.statusBar.tooltip = 'CmpHelper: ' + tooltip;
-        Utils.log(tooltip);
-        try {
-            if (timeer !== null) {
-                clearTimeout(timeer);
-            }
-            timeer = setTimeout(() => {
-                timeer = null;
-                Utils.statusBar.text = 'CmpHelper: Ready';
-                Utils.statusBar.tooltip = 'CmpHelper: cmp helper is Ready';
-            }, 100000);
-        } catch (e) {
-        }
-    }
+ 
 
     /**
      * 支持同步的文件的后缀
@@ -133,21 +94,7 @@ class Utils {
         return;
     }
 
-    /**
-     * 日志输出
-     * @param args
-     */
-    static log(...args) {
-        if (!ClassUtils.isUndefined(Utils.logger)) {
-            args.forEach(function (str, index, arr) {
-                try {
-                    Utils.logger.appendLine(str);
-                } catch (error) {
-                }
-            });
-        }
-        console.log(...args);
-    }
+
 
     private static defaultHeaders = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.90 Safari/537.36',
@@ -160,7 +107,7 @@ class Utils {
                 "address": ip,
                 "jsessionId": jsessionId,
             }, function (msg) {
-                Utils.updateStatusBar("Hot load success,please reload M3", `热部署App完成,请重启M3`);
+                LogFactory.updateStatus("Hot load success,please reload M3", `热部署App完成,请重启M3`);
                 window.showInformationMessage(`Hot load success，please reload M3`);
             });
         }
@@ -179,7 +126,7 @@ class Utils {
      * @param success
      */
     private static reloadV5Apps(parms, success) {
-        Utils.updateStatusBar("Hot load [start publish M3 App]", "热部署【开始重新发布App】");
+        LogFactory.updateStatus("Hot load [start publish M3 App]", "热部署【开始重新发布App】");
 
         // 热更新 ： http://127.0.0.1/seeyon/ajax.do?method=ajaxAction&managerName=m3AppNewManager&rnd=32080
         // managerMethod: reloadV5Apps arguments: [{"reset":0}]
@@ -199,21 +146,21 @@ class Utils {
             }
         }, function (err, httpResponse, body) {
             if (err !== null) {
-                Utils.log(err);
-                Utils.updateStatusBar("Hot load [Fail]", err);
+                LogFactory.log(err);
+                LogFactory.updateStatus("Hot load [Fail]", err);
                 return;
             }
             if (httpResponse.statusCode !== 200) {
-                Utils.updateStatusBar("Hot load [Fail]", `响应状态码不等于200【${httpResponse.statusCode}】`);
+                LogFactory.updateStatus("Hot load [Fail]", `响应状态码不等于200【${httpResponse.statusCode}】`);
                 return;
             }
             //{"resultCode":60000,"message":"成功热部署：0个应用包；更新的应用包名称： "}
-            Utils.log("body : " + body);
+            LogFactory.log("body : " + body);
             let res = JSON.parse(body);
             if (res.resultCode === 60000) {
                 success(res.message);
             } else {
-                Utils.updateStatusBar("Hot load [Fail]", res.message);
+                LogFactory.updateStatus("Hot load [Fail]", res.message);
                 window.showErrorMessage("Hot load fail", "please check you config", res.message);
             }
         });
@@ -243,7 +190,7 @@ class Utils {
          screenWidth: 1920
          screenHeight: 1080
          */
-        Utils.updateStatusBar("Hot load [start login V5]", "开始登录V5");
+        LogFactory.updateStatus("Hot load [start login V5]", "开始登录V5");
         request.post({
             url: `${parms.address}/seeyon/main.do?method=login`,
             headers: {
@@ -265,15 +212,15 @@ class Utils {
             }
         }, function (err, httpResponse, body) {
             if (err !== null) {
-                Utils.log(err);
-                Utils.updateStatusBar("Hot load [Fail]", err);
+                LogFactory.log(err);
+                LogFactory.updateStatus("Hot load [Fail]", err);
                 error();
                 return;
             }
             if (httpResponse.statusCode !== 302 /** 302 登录成功重定向 */
                 || !ClassUtils.isUndefined(httpResponse.headers["LoginError"]) /** header：LoginError：1表示登录失败 */
                 || httpResponse.headers["loginok"] !== "ok"  /** loginok:"ok" 表示登录成功 */) {
-                Utils.updateStatusBar("Hot load [Fail]", "systen登录失败,请设置正确的system账号密码");
+                    LogFactory.updateStatus("Hot load [Fail]", "systen登录失败,请设置正确的system账号密码");
                 error();
                 return;
             }
@@ -286,29 +233,13 @@ class Utils {
                     jsessionId = val.replace(/.*JSESSIONID=([^;]*);.*/gi, "$1");
                 }
             });
-            Utils.updateStatusBar("Hot load [Login sucess]", `systen登录成功，JSESSIONID:${jsessionId}`);
-            Utils.log("jsessionId : " + jsessionId);
+            LogFactory.updateStatus("Hot load [Login sucess]", `systen登录成功，JSESSIONID:${jsessionId}`);
+            LogFactory.log("jsessionId : " + jsessionId);
             success(jsessionId);
         });
     }
 
-    /**
-     *  获取当前的工作目录
-     * @param maybePath 可能是uri
-     */
-    static getPathOrActivepath(maybePath: any): string | null {
-        let appPath = null;
-        if (maybePath === null) {
-            try {
-                appPath = window.activeTextEditor.document.fileName;
-            } catch (error) {
-                Utils.log(error);
-            }
-        } else {
-            appPath = maybePath.fsPath;
-        }
-        return appPath;
-    }
+
     /**
      * 读取 Matedata文件
      * @param fileName 
@@ -318,20 +249,25 @@ class Utils {
         if(ClassUtils.isUndefinedOrNull(json)){
             return;
         }
-        Utils.log("src matedata",json);
+        LogFactory.log("src matedata",json);
         let targetObject = Utils.flatMap(json,"",{});
-        Utils.log("flatMap matedata",targetObject);
+        LogFactory.log("flatMap matedata",targetObject);
         targetObject = Utils.replacePlaceHolder(targetObject,{});
-        Utils.log("placeHolder matedata",targetObject);
+        LogFactory.log("placeHolder matedata",targetObject);
         return targetObject;
     }
-
+    /**
+     * 替换占位字符
+     * @param srcObject 
+     * @param targetObject 
+     */
     private static replacePlaceHolder(srcObject: any,targetObject:any): any {
         let buildversion = workspace.getConfiguration("seeyon.cmp-helper").get("buildversion", true);
         let buildversionStr = "";
         if (buildversion) {
             buildversionStr = "?bd_t=" + new Date().getTime() + "";
         }
+        targetObject["buildversion"] = buildversionStr;
         for (const key in srcObject) {
             let element = srcObject[key];
             if (ClassUtils.isString(element)) {
@@ -384,7 +320,7 @@ class Utils {
         } catch (error) {
             let msg = `读取JSON文件[${jsonFileName}]失败,请检查JSON文件是否有误，或者JSON编码格式为UTF8 BOM`;
             window.showErrorMessage(msg);
-            Utils.log(msg, error);
+            LogFactory.log(msg, error);
         }
         return;
     }
